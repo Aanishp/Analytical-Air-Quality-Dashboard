@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI Dashboard</title>
+    <link rel="stylesheet" href="../static/css/aqistyles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="#" onclick="toggleCityList()">City</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="header">
+        <h1>AQI Dashboard</h1>
+        <p>Monitor air quality across cities and understand its impact on your health.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        <section class="intro">
+            <h2>What is AQI?</h2>
+            <p>
+                The Air Quality Index (AQI) is used to communicate how polluted the air currently is or how polluted it is forecasted to become. It helps you understand the potential impact on your health. 
+            </p>
+            <p>
+                <strong>Categories:</strong> AQI levels range from "Good" to "Hazardous," with varying effects on individuals.
+            </p>
+            
+        </section>
+        <div id="map" style="height: 520px"></div>
+    <link
+      rel="stylesheet"
+      href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css"
+    />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+
+    <style>
+      .custom-popup {
+        font-family: Arial, sans-serif;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        color: #000;
+        font-size: 16px;
+        animation: slideIn 0.4s ease-out;
+      }
+
+      .custom-popup.good {
+        background-color: #a8e6a1; /* Light Green */
+      }
+
+      .custom-popup.satisfactory {
+        background-color: #d8f48f; /* Pale Yellow Green */
+      }
+
+      .custom-popup.moderate {
+        background-color: #fff3b0; /* Soft Yellow */
+      }
+
+      .custom-popup.poor {
+        background-color: #ffc48c; /* Peach */
+      }
+
+      .custom-popup.very-poor {
+        background-color: #ff9999; /* Light Red */
+      }
+
+      .custom-popup.severe {
+        background-color: #d17c93; /* Muted Maroon */
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .leaflet-popup-content-wrapper {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      .leaflet-popup-content {
+        margin: 0;
+        padding: 0;
+      }
+
+      .leaflet-popup-tip {
+        background: transparent !important;
+      }
+    </style>
+
+    <script>
+      var OSM_URL = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+      var OSM_ATTRIB =
+        '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+      var osmLayer = L.tileLayer(OSM_URL, { attribution: OSM_ATTRIB });
+
+      var WAQI_URL =
+        "https://tiles.waqi.info/tiles/usepa-aqi/{z}/{x}/{y}.png?token=YOUR_API_KEY_HERE";
+      var WAQI_ATTR =
+        'Air Quality Tiles &copy; <a href="http://waqi.info">waqi.info</a>';
+      var waqiLayer = L.tileLayer(WAQI_URL, { attribution: WAQI_ATTR });
+
+      // Initialize map
+      var map = L.map("map").setView([51.505, -0.09], 11);
+      map.addLayer(osmLayer).addLayer(waqiLayer);
+
+      // Detect user location
+      map.locate({ setView: true, maxZoom: 13 });
+
+      function onLocationFound(e) {
+        var userLat = e.latlng.lat;
+        var userLng = e.latlng.lng;
+
+        var url = `https://api.waqi.info/feed/geo:${userLat};${userLng}/?token=YOUR_API_KEY_HERE`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              var aqiData = data.data;
+
+              var popupContent = `<div class="custom-popup ${getConditionClass(
+                aqiData.aqi
+              )}">
+                        <strong>Area:</strong> ${aqiData.city.name}<br>
+                        <strong>AQI:</strong> ${aqiData.aqi}<br>
+                        <strong>PM10:</strong> ${
+                          aqiData.iaqi.pm10 ? aqiData.iaqi.pm10.v : "N/A"
+                        }<br>
+                        <strong>PM2.5:</strong> ${
+                          aqiData.iaqi.pm25 ? aqiData.iaqi.pm25.v : "N/A"
+                        }<br>
+                        <strong>Condition:</strong> ${getCondition(
+                          aqiData.aqi
+                        )}<br>
+                        <strong>Comment:</strong> ${getComment(aqiData.aqi)}
+                    </div>`;
+
+              var userMarker = L.marker([userLat, userLng]).addTo(map);
+              userMarker.bindPopup(popupContent).openPopup();
+            } else {
+              alert("Unable to fetch AQI data for your location.");
+            }
+          })
+          .catch((err) => {
+            console.error("Error fetching AQI data for user location:", err);
+          });
+      }
+
+      function onLocationError(e) {
+        alert("Unable to detect location: " + e.message);
+      }
+
+      map.on("locationfound", onLocationFound);
+      map.on("locationerror", onLocationError);
+
+      // Add click event to AQI layer
+      map.on("click", function (e) {
+        var url = `https://api.waqi.info/feed/geo:${e.latlng.lat};${e.latlng.lng}/?token=YOUR_API_KEY_HERE`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "ok") {
+              var aqiData = data.data;
+
+              var popupContent = `<div class="custom-popup ${getConditionClass(
+                aqiData.aqi
+              )}">
+                        <strong>Area:</strong> ${aqiData.city.name}<br>
+                        <strong>AQI:</strong> ${aqiData.aqi}<br>
+                        <strong>PM10:</strong> ${
+                          aqiData.iaqi.pm10 ? aqiData.iaqi.pm10.v : "N/A"
+                        }<br>
+                        <strong>PM2.5:</strong> ${
+                          aqiData.iaqi.pm25 ? aqiData.iaqi.pm25.v : "N/A"
+                        }<br>
+                        <strong>Condition:</strong> ${getCondition(
+                          aqiData.aqi
+                        )}<br>
+                        <strong>Comment:</strong> ${getComment(aqiData.aqi)}
+                    </div>`;
+
+              L.popup()
+                .setLatLng(e.latlng)
+                .setContent(popupContent)
+                .openOn(map);
+            } else {
+              alert("Unable to fetch AQI data for this location.");
+            }
+          })
+          .catch((err) => {
+            console.error("Error fetching AQI data:", err);
+          });
+      });
+
+      function getCondition(aqi) {
+        if (aqi <= 50) return "Good";
+        if (aqi <= 100) return "Satisfactory";
+        if (aqi <= 200) return "Moderate";
+        if (aqi <= 300) return "Poor";
+        if (aqi <= 400) return "Very Poor";
+        return "Severe";
+      }
+
+      function getConditionClass(aqi) {
+        if (aqi <= 50) return "good";
+        if (aqi <= 100) return "satisfactory";
+        if (aqi <= 200) return "moderate";
+        if (aqi <= 300) return "poor";
+        if (aqi <= 400) return "very-poor";
+        return "severe";
+      }
+
+      function getComment(aqi) {
+        if (aqi <= 50)
+          return "The air quality is excellent, posing no risk to health.";
+        if (aqi <= 100)
+          return "The air quality is acceptable; sensitive individuals may experience minor discomfort.";
+        if (aqi <= 200)
+          return "The air quality is tolerable but may cause discomfort to sensitive groups such as children and the elderly.";
+        if (aqi <= 300)
+          return "The air quality is unhealthy; prolonged exposure may cause discomfort or health issues.";
+        if (aqi <= 400)
+          return "The air quality is very unhealthy; respiratory issues are likely for prolonged exposure.";
+        return "The air quality is hazardous; even healthy individuals may experience severe health effects.";
+      }
+    </script>
+
+        <!-- City List (Initially Hidden) -->
+        <div id="city-list" class="city-list hidden">
+            <h2>Choose a City</h2>
+            <div class="city-box" onclick="navigateToCityPage('Bangalore')">Bangalore</div>
+            <div class="city-box" onclick="navigateToCityPage('Hyderabad')">Hyderabad</div>
+            <div class="city-box" onclick="navigateToCityPage('Delhi')">Delhi</div>
+            <div class="city-box" onclick="navigateToCityPage('Thiruvananthapuram')">Thiruvananthapuram</div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>🌱 Let's work together for cleaner air. Stay informed and take action!</p>
+    </footer>
+
+    <script>
+        // Toggle city list visibility
+        function toggleCityList() {
+            const cityList = document.getElementById('city-list');
+            cityList.classList.toggle('hidden');
+        }
+
+        // Navigate to the respective city's AQI page
+        function navigateToCityPage(city) {
+            if (city === 'Bangalore') {
+                window.location.href = '/bangalore';  // Replace with the actual path to Bangalore page
+            } else if (city === 'Hyderabad') {
+                window.location.href = '/hyderabad';  // Replace with the actual path to Pune page
+            } else if (city === 'Delhi') {
+                window.location.href = '/delhi';  // Replace with the actual path to Delhi page
+            }
+         else if (city === 'Thiruvananthapuram') {
+                window.location.href = '/thiruvananthapuram';  // Replace with the actual path to Delhi page
+            }
+            
+        }
+    </script>
+</body>
+</html>

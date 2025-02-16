@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangalore Locations</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/bangalore.css">
+    <link rel="stylesheet" href="../static/css/aqistyles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="#" onclick="toggleCityList()">City</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="header">
+        <h1>Bangalore Locations</h1>
+        <p>Choose a location to view more details.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        <section class="city-boxes">
+            <h2>Choose a Location in Bangalore</h2>
+            <div class="location-box" id="btm-layout" onclick="location.href='/btm-layout'">
+                <h3>BTM Layout</h3>
+            </div>
+            <div class="location-box" id="hebbal" onclick="location.href='/hebbal'">
+                <h3>Hebbal</h3>
+            </div>
+            <div class="location-box" id="peenya" onclick="location.href='/peenya'">
+                <h3>Peenya</h3>
+            </div>
+        </section>
+        <!-- City List (Initially Hidden) -->
+        <div id="city-list" class="city-list hidden">
+            <h2>Choose a City</h2>
+            <div class="city-box" onclick="navigateToCityPage('Bangalore')">Bangalore</div>
+            <div class="city-box" onclick="navigateToCityPage('Hyderabad')">Hyderabad</div>
+            <div class="city-box" onclick="navigateToCityPage('Delhi')">Delhi</div>
+            <div class="city-box" onclick="navigateToCityPage('Thiruvananthapuram')">Thiruvananthapuram</div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>🌱 Let's work together for cleaner air. Stay informed and take action!</p>
+    </footer>
+    <script>
+        // Toggle city list visibility
+        function toggleCityList() {
+            const cityList = document.getElementById('city-list');
+            cityList.classList.toggle('hidden');
+        }
+
+        // Navigate to the respective city's AQI page
+        function navigateToCityPage(city) {
+            if (city === 'Bangalore') {
+                window.location.href = '/bangalore';  // Replace with the actual path to Bangalore page
+            } else if (city === 'Hyderabad') {
+                window.location.href = '/hyderabad';  // Replace with the actual path to Pune page
+            } else if (city === 'Delhi') {
+                window.location.href = '/delhi';  // Replace with the actual path to Delhi page
+            }
+         else if (city === 'Thiruvananthapuram') {
+                window.location.href = '/thiruvananthapuram';  // Replace with the actual path to Delhi page
+            }
+            
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* General Body Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #004a64, #004a64); /* Dark gradient background */
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #006d8f;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar li {
+    display: inline;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #004a64;
+    border-radius: 5px;
+    color: #d0efff;
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #00d4ff;
+}
+
+/* City List */
+.city-list {
+    position: fixed;
+    top: 70px; /* Positioned below the navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9); /* Dark transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    z-index: 1000;
+    width: 90%;
+    max-width: 600px;
+    border: 2px solid #00d4ff;
+}
+
+.city-list h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #00d4ff;
+}
+
+.city-box {
+    background: rgba(0, 255, 150, 0.2);
+    border: 2px solid #00d4ff;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin: 10px auto;
+    max-width: 200px;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.city-box:hover {
+    background: rgba(0, 255, 150, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Intro Section */
+.intro {
+    text-align: center;
+    margin: 10px auto;
+    max-width: 6000px;
+}
+
+.intro-image {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    margin-top: 30px;
+    font-size: 14px;
+    color: #d0efff;
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}

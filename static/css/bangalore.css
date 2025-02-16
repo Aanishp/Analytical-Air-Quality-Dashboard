@@ -1,0 +1,99 @@
+/* General Body Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #004a64, #004a64); /* Dark gradient background */
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #006d8f;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar li {
+    display: inline;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #004a64;
+    border-radius: 5px;
+    color: #d0efff;
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #00d4ff;
+}
+
+/* Location Box Section */
+.city-boxes {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.city-boxes h2 {
+    font-size: 24px;
+    color: #00d4ff;
+}
+
+/* Location Box Styling */
+.location-box {
+    background-color: #006d8f;
+    padding: 30px;
+    margin: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 200px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover Effect on Location Box */
+.location-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.location-box h3 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Footer Section */
+.footer {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    margin-top: 30px;
+    font-size: 14px;
+    color: #d0efff;
+}

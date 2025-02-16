@@ -1,0 +1,261 @@
+/* General Layout */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #fff;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: #2196f3;
+    color: #fff;
+    padding: 20px;
+    height: 100%;
+}
+
+.sidebar-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    display: block;
+}
+
+.nav-link:hover {
+    background: #1976d2;
+    padding-left: 10px;
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+/* Header */
+.header h1 {
+    font-size: 2.5rem;
+    color: #2196f3;
+}
+
+.header p {
+    font-size: 1rem;
+    color: #b0bec5;
+}
+
+/* Forecast Section */
+.forecast-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px; /* Added margin to create space below forecast section */
+}
+
+.forecast-box {
+    background: #222;
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 120px;
+    position: relative;
+    cursor: pointer; /* Indicates it's interactive */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add smooth transition */
+}
+
+.forecast-box h5 {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.aqi-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    margin: 0 auto 10px;
+}
+
+/* Tooltip popup on hover */
+.forecast-box:hover::after {
+    content: attr(data-tooltip); /* Display the value stored in 'data-tooltip' */
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Hide the tooltip by default */
+.forecast-box::after {
+    content: '';
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Hover effect to bring the box further forward */
+.forecast-box:hover {
+    transform: translateY(-20px);  /* Increased the lift to make it come more forward */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);  /* Enhanced shadow to emphasize the lifted effect */
+}
+
+/* Chart Section */
+.chart {
+    margin-top: 40px; /* Added margin to give space between forecast and chart */
+}
+
+/* Adjusted chart size to Medium */
+.chart canvas {
+    max-width: 100%;  /* Use full available width */
+    max-height: 400px; /* Adjusted height for a medium-sized chart */
+    width: 90%;  /* Make it responsive */
+    margin: 0 auto; /* Centering the chart */
+}
+
+/* Cards */
+.card {
+    background: #333;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Chart Header (For the AQI Trends and dropdown) */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-header select {
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #333;
+}
+
+/* General Responsive Styles */
+@media (max-width: 768px) {
+    .forecast-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .forecast-box {
+        width: 80%;
+    }
+
+    .chart canvas {
+        max-width: 100%;  /* Full width for smaller screens */
+        max-height: 300px; /* Adjusted height for better fit */
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .chart-header select {
+        margin-top: 10px;
+        width: 100%; /* Make the dropdown full width for smaller screens */
+    }
+}
+
+/* Style for the dropdowns */
+#periodSelect, #chartTypeSelect {
+    font-size: 1rem;
+    padding: 5px;
+    margin: 10px;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 5px;
+}
+.min-max-values p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.aqi-circle {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+/* Styling for the Min/Max box */
+.min-max-box {
+    padding: 15px;
+    background-color: #202020;  /* Light background for visibility */
+    border-radius: 8px;
+    border: 2px solid #ccc;     /* Border around the box */
+    width: 180px;               /* Width of the box */
+    margin-top: 20px;           /* Space between chart and box */
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);  /* Light shadow */
+}
+
+/* Styling for the paragraphs inside the Min/Max box */
+.min-max-box p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+/* Styling for the AQI values inside the Min/Max box */
+.min-max-box span {
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 50%;
+    color: white;               /* Text color for the value */
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    margin-left: 10px;          /* Space between label and value */
+}
+
+/* Coloring of the circles based on AQI value */
+.min-max-box span {
+    background-color: #ff4d4d; /* Default red color */
+}
+
+
+

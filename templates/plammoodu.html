@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plammoodu AQI Dashboard</title>
+    <link rel="stylesheet" href="../static/css/hebbal.css">
+</head>
+<body>
+    <div class="dashboard-container d-flex">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Air Quality Dashboard</h2>
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="/thiruvananthapuram" class="nav-link">Thiruvananthapuram Locations</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Plammoodu Air Quality Index</h1>
+                <p>Stay informed about real-time air quality data in Plammoodu, Thiruvananthapuram.</p>
+            </header>
+
+           <!-- Current AQI Section -->
+           <section class="current-aqi">
+            <div class="card">
+                <div id="aqi-box" class="aqi-box" style="
+            text-align: center; 
+            padding: 15px; 
+            border-radius: 8px; 
+            width: 250px; 
+            margin: 0 auto; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+            background-color: #f5f5f5; /* Default background for fallback */">
+                    <div style="font-size: 20px; margin-bottom: 10px; color: red">
+                        <span>●</span> Live AQI
+                    </div>
+                    <div style="font-size: 60px; font-weight: bold;" id="live-aqi-value">
+                        {{ real_time['aqi'] }}
+                    </div>
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;" id="live-aqi-status">
+                        {{ real_time['condition'] }}
+                    </div>
+                    <div style="font-size: 14px;" id="live-aqi-message">
+                        {{ real_time["comment"] }}
+                    </div>
+
+                    <!-- PM10 and PM2.5 values -->
+                    <div style="margin-top: 15px;">
+                        <p style="font-size: 14px; margin: 5px 0;">
+                            <strong>PM10:</strong> <span id="pm10-value">{{ real_time["pm10"] }}</span> µg/m³
+                        </p>
+                        <p style="font-size: 14px; margin: 5px 0;">
+                            <strong>PM2.5:</strong> <span id="pm25-value">{{ real_time["pm25"] }}</span> µg/m³
+                        </p>
+                    </div>
+                    <!-- PM10 and PM2.5 values -->
+                    <div style="margin-top: 15px;">
+                        <p><strong>Updated On:</strong> <span>{{ real_time["timestamp"] }}</span><p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            // Get AQI value from Python using Jinja templating
+            var aqiValue = JSON.parse("{{ real_time['aqi'] | tojson | safe }}");
+
+            // Get the AQI box element
+            var aqiBox = document.getElementById('aqi-box');
+
+            // Function to get softer background color based on AQI value
+            function getSoftColorForAqi(aqi) {
+                if (aqi <= 50) {
+                    return '#a8d5ba'; // Soft green (Good)
+                } else if (aqi <= 100) {
+                    return '#fff4b1'; // Soft yellow (Moderate)
+                } else if (aqi <= 150) {
+                    return '#ffd4a3'; // Soft orange (Unhealthy for Sensitive Groups)
+                } else if (aqi <= 200) {
+                    return '#f2a7a0'; // Soft red (Unhealthy)
+                } else if (aqi <= 300) {
+                    return '#d3b8e6'; // Soft purple (Very Unhealthy)
+                } else {
+                    return '#a97a94'; // Soft maroon (Hazardous)
+                }
+            }
+
+            // Set the background color of the AQI box
+            aqiBox.style.backgroundColor = getSoftColorForAqi(aqiValue);
+
+            // Optional: Adjust text color for better contrast
+            if (aqiValue > 200) {
+                aqiBox.style.color = 'white'; // High AQI values, keep text white
+            } else {
+                aqiBox.style.color = '#333'; // Lower AQI values, use dark gray text
+            }
+        </script>
+
+        <style>
+            /* Add hover effect with animation */
+            .aqi-box {
+                cursor: pointer;
+                /* Indicates it's interactive */
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                /* Add smooth transition */
+            }
+
+            .aqi-box:hover {
+                transform: scale(1.05);
+                /* Slightly enlarge the box */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                /* Increase shadow for pop effect */
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                /* Smooth animation */
+            }
+
+            .current-aqi {
+                margin-bottom: 40px;
+            }
+        </style>
+
+
+        <script>
+            // Get AQI value from Python using Jinja templating
+            var aqiValue = JSON.parse("{{ real_time['aqi'] | tojson | safe }}");
+
+            // Get the AQI box element
+            var aqiBox = document.getElementById('aqi-box');
+
+            // Function to get softer background color based on AQI value
+            function getSoftColorForAqi(aqi) {
+                if (aqi <= 50) {
+                    return '#a8d5ba'; // Soft green (Good)
+                } else if (aqi <= 100) {
+                    return '#fff4b1'; // Soft yellow (Moderate)
+                } else if (aqi <= 150) {
+                    return '#ffd4a3'; // Soft orange (Unhealthy for Sensitive Groups)
+                } else if (aqi <= 200) {
+                    return '#f2a7a0'; // Soft red (Unhealthy)
+                } else if (aqi <= 300) {
+                    return '#d3b8e6'; // Soft purple (Very Unhealthy)
+                } else {
+                    return '#a97a94'; // Soft maroon (Hazardous)
+                }
+            }
+
+            // Set the background color of the AQI box
+            aqiBox.style.backgroundColor = getSoftColorForAqi(aqiValue);
+
+            // Optional: Adjust text color for better contrast
+            if (aqiValue > 200) {
+                aqiBox.style.color = 'white'; // High AQI values, keep text white
+            } else {
+                aqiBox.style.color = '#333'; // Lower AQI values, use dark gray text
+            }
+        </script>
+
+
+        <!-- Current Date -->
+        <section class="current-date">
+            <h3></h3>
+        </section>
+
+        <!-- Forecast Section -->
+        <section class="forecast">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">7-Day Forecast</h2>
+                    <div class="forecast-grid" id="forecast-grid">
+                        <!-- Forecast boxes will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AQI Trend Chart -->
+        <section class="chart">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        AQI Trends
+                        <div>
+                            <!-- Period Select Dropdown -->
+                            <select id="periodSelect">
+                                <option value="7">7 Days</option>
+                                <option value="30">30 Days</option>
+                            </select>
+
+                            <!-- Chart Type Select Dropdown -->
+                            <select id="chartTypeSelect">
+                                <option value="line">Line Chart</option>
+                                <option value="bar">Bar Chart</option>
+                            </select>
+
+                            <select id="parameterSelect">
+                                <option value="aqi">AQI</option>
+                                <option value="pm25">PM2.5</option>
+                                <option value="pm10">PM10</option>
+                                <option value="co">CO</option>
+                                <option value="so2">SO2</option>
+                                <option value="no2">NO2</option>
+                                <option value="o3">O3</option>
+                            </select>
+                        </div>
+                    </h2>
+                    <canvas id="aqiChart"></canvas>
+
+                    <!-- Min/Max Values Box -->
+                    <div id="min-max-box" class="min-max-box">
+                        <p><strong>Min:</strong> <span id="min-aqi-value">135</span></p>
+                        <p><strong>Max:</strong> <span id="max-aqi-value">175</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const aqiTrendData7Days = JSON.parse('{{ aqi_trend_7 | tojson | safe }}');
+            const aqiTrendData30Days = JSON.parse('{{ aqi_trend_30 | tojson | safe }}');
+            const labels7Days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const labels30Days = Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
+
+            const aqiChart = document.getElementById('aqiChart');
+            const chart = new Chart(aqiChart, {
+                type: 'line',
+                data: {
+                    labels: generateDateLabels(7),  // Start with 7-day date labels
+                    datasets: [{
+                        label: 'AQI Trend',
+                        data: aqiTrendData7Days,
+                        borderColor: '#ff4d4d',
+                        backgroundColor: 'rgba(255, 77, 77, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    const selectedParam = document.getElementById('parameterSelect').value;
+                                    const yAxisTitle = getYAxisTitle(selectedParam);
+                                    return `${yAxisTitle}: ${tooltipItem.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'AQI Value'
+                            }
+                        }
+                    }
+                }
+            });
+
+
+            const data = {
+                aqi: aqiTrendData30Days, // Full 30-day AQI data
+                pm25: JSON.parse('{{ pm25_trend_30 | tojson | safe }}'),
+                pm10: JSON.parse('{{ pm10_trend_30 | tojson | safe }}'),
+                co: JSON.parse('{{ co_trend_30 | tojson | safe }}'),
+                so2: JSON.parse('{{ so2_trend_30 | tojson | safe }}'),
+                no2: JSON.parse('{{ no2_trend_30 | tojson | safe }}'),
+                o3: JSON.parse('{{ o3_trend_30 | tojson | safe }}')
+            }
+
+
+            // Function to generate date labels
+            function generateDateLabels(period) {
+                const labels = [];
+                const today = new Date();
+
+                for (let i = 0; i < period; i++) {
+                    const currentDate = new Date(today);
+                    currentDate.setDate(today.getDate() + i);  // Increment the date for each day
+                    const dateString = currentDate.toLocaleDateString('en-US', {
+                        weekday: 'short', month: 'short', day: 'numeric'
+                    });
+                    labels.push(dateString);
+                }
+                return labels;
+            }
+
+            // Handle period select change (7 or 30 days)
+            document.getElementById('parameterSelect').addEventListener('change', function (event) {
+                const selectedParam = event.target.value;
+                const selectedPeriod = document.getElementById('periodSelect').value;
+
+                // Check if period is 7 or 30 and update data accordingly
+                const periodData = selectedPeriod === "7" ? data[selectedParam].slice(0, 7) : data[selectedParam];
+                const periodLabels = generateDateLabels(periodData.length);
+
+                chart.data.labels = periodLabels;
+                chart.data.datasets[0].data = periodData;
+                chart.data.datasets[0].label = `${selectedParam.toUpperCase()} Trend`;
+
+                // Update Y-axis title
+                const yAxisTitle = getYAxisTitle(selectedParam);
+                chart.options.scales.y.title.text = yAxisTitle;
+
+                chart.update();
+                updateMinMax();
+            });
+
+
+            // Function to return the Y-axis title based on selected parameter
+            function getYAxisTitle(parameter) {
+                switch (parameter) {
+                    case 'pm25':
+                        return 'PM2.5 (µg/m³)';
+                    case 'pm10':
+                        return 'PM10 (µg/m³)';
+                    case 'co':
+                        return 'CO (ppm)';
+                    case 'so2':
+                        return 'SO2 (µg/m³)';
+                    case 'no2':
+                        return 'NO2 (µg/m³)';
+                    case 'o3':
+                        return 'O3 (ppb)';
+                    case 'aqi':
+                    default:
+                        return 'AQI';
+                }
+            }
+
+            // Handle chart type select change (Line or Bar)
+            document.getElementById('chartTypeSelect').addEventListener('change', function (event) {
+                const chartType = event.target.value;
+                chart.config.type = chartType;
+                chart.update();
+            });
+
+            // Handle parameter select change
+            document.getElementById('parameterSelect').addEventListener('change', function (event) {
+                const selectedParam = event.target.value;
+                chart.data.datasets[0].data = data[selectedParam];
+                chart.data.datasets[0].label = `${selectedParam.toUpperCase()} Trend`;
+                chart.update();
+                updateMinMax();
+            });
+
+            /// Assuming predict_7 data is passed as a JavaScript variable
+            const forecastData = JSON.parse('{{ predict_7 | tojson | safe }}');
+
+            // Clear existing forecast grid content
+            const forecastGrid = document.getElementById('forecast-grid');
+            forecastGrid.innerHTML = '';
+
+            // Function to get color based on AQI value
+            function getColorByCondition(AQI) {
+                if (AQI <= 50) return '#009966';  // Good
+                if (AQI <= 100) return '#ffde33'; // Moderate
+                if (AQI <= 150) return '#ff9933'; // Unhealthy for sensitive groups
+                if (AQI <= 200) return '#cc0033'; // Unhealthy
+                if (AQI <= 300) return '#660099'; // Very unhealthy
+                return '#7e0023';                  // Hazardous
+            }
+
+            // Populate the forecast grid with predict_7 data
+            forecastData.forEach(data => {
+                const col = document.createElement('div');
+                col.className = 'forecast-box';
+                col.setAttribute('data-tooltip', data.condition); // Tooltip for detailed comments
+
+                col.innerHTML = `
+    <h5>${new Date(data.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</h5>
+    <div class="aqi-circle ${data.class}" style="background-color: ${getColorByCondition(data.AQI)};">
+        <span>${data.AQI}</span>
+    </div>
+    <p>${data.condition}</p>
+`;
+
+                forecastGrid.appendChild(col);
+            });
+
+
+            function generateForecastData(baseDate, dayIndex) {
+                const forecastDate = new Date(baseDate);
+                forecastDate.setDate(baseDate.getDate() + dayIndex);
+
+                const dayName = forecastDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const aqiValue = Math.floor(Math.random() * 200);
+                const aqiCategory = getCondition(aqiValue);
+
+                return {
+                    day: dayName,
+                    aqi: aqiValue,
+                    status: aqiCategory,
+                    color: getColorByCondition(aqiValue)
+                };
+            }
+
+            function getColorByCondition(aqi) {
+                if (aqi <= 50) {
+                    return '#a8d5ba'; // Soft green (Good)
+                } else if (aqi <= 100) {
+                    return '#fff4b1'; // Soft yellow (Moderate)
+                } else if (aqi <= 150) {
+                    return '#ffd4a3'; // Soft orange (Unhealthy for Sensitive Groups)
+                } else if (aqi <= 200) {
+                    return '#f2a7a0'; // Soft red (Unhealthy)
+                } else if (aqi <= 300) {
+                    return '#d3b8e6'; // Soft purple (Very Unhealthy)
+                } else {
+                    return '#a97a94'; // Soft maroon (Hazardous)
+                }
+            }
+
+
+            function getCondition(aqi) {
+                if (aqi <= 50) return "Good";
+                if (aqi <= 100) return "Satisfactory";
+                if (aqi <= 200) return "Moderate";
+                if (aqi <= 300) return "Poor";
+                if (aqi <= 400) return "Very Poor";
+                return "Severe";
+            }
+
+            // Function to update min and max values displayed on the page based on the selected parameter
+            // Function to update the Min/Max AQI values and their colors inside a box
+            function updateMinMax() {
+                const minAqi = Math.min(...chart.data.datasets[0].data);
+                const maxAqi = Math.max(...chart.data.datasets[0].data);
+
+                // Update min/max AQI values
+                document.getElementById('min-aqi-value').textContent = minAqi;
+                document.getElementById('max-aqi-value').textContent = maxAqi;
+
+                // Update the color of the circles based on AQI value
+                document.getElementById('min-aqi-value').style.backgroundColor = getColorForAqi(minAqi);
+                document.getElementById('max-aqi-value').style.backgroundColor = getColorForAqi(maxAqi);
+
+
+
+            }
+
+            // Function to get color based on AQI value
+            function getColorForAqi(aqi) {
+                if (aqi <= 50) {
+                    return '#a8d5ba'; // Soft green (Good)
+                } else if (aqi <= 100) {
+                    return '#fff4b1'; // Soft yellow (Moderate)
+                } else if (aqi <= 150) {
+                    return '#ffd4a3'; // Soft orange (Unhealthy for Sensitive Groups)
+                } else if (aqi <= 200) {
+                    return '#f2a7a0'; // Soft red (Unhealthy)
+                } else if (aqi <= 300) {
+                    return '#d3b8e6'; // Soft purple (Very Unhealthy)
+                } else {
+                    return '#a97a94'; // Soft maroon (Hazardous)
+                }
+            }
+
+            // Initial min/max update
+            updateMinMax();
+
+
+            // Display today's date in the 'current-date' section
+            function displayTodayDate() {
+                const today = new Date();
+                today.setDate(today.getDate() - 1); // Subtract one day
+                const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+                const todayDate = today.toLocaleDateString('en-US', options);
+                document.getElementById('today-date').textContent = todayDate;
+            }
+
+            // Call the function to display today's date
+            displayTodayDate();
+
+
+            document.getElementById('periodSelect').addEventListener('change', function (event) {
+                const selectedPeriod = event.target.value;
+                const selectedParam = document.getElementById('parameterSelect').value;
+
+                // Check if period is 7 or 30 and update data accordingly
+                const periodData = selectedPeriod === "7" ? data[selectedParam].slice(0, 7) : data[selectedParam];
+                const periodLabels = generateDateLabels(periodData.length);
+
+                chart.data.labels = periodLabels;
+                chart.data.datasets[0].data = periodData;
+                chart.data.datasets[0].label = `${selectedParam.toUpperCase()} Trend`;
+
+                chart.update();
+                updateMinMax();
+            });
+
+
+            // Generate date labels for the selected period
+            function generateDateLabels(period) {
+                const labels = [];
+                const today = new Date();
+                today.setDate(today.getDate() - 1); // Subtract one day
+                for (let i = 0; i < period; i++) {
+                    const currentDate = new Date(today);
+                    currentDate.setDate(today.getDate() - (period - 1 - i)); // Adjust date to generate labels in order
+                    const dateString = currentDate.toLocaleDateString('en-US', {
+                        weekday: 'short', month: 'short', day: 'numeric'
+                    });
+                    labels.push(dateString);
+                }
+                return labels;
+            }
+
+        </script>
+</body>
+
+</html>
