@@ -115,8 +115,10 @@ The server should start at `http://127.0.0.1:5000/`
 ![Historical AQI Trends Over 30 Days - Line Graph](https://i.imgur.com/GXj0tm8.png)
 
 ---
+
 ## Dataset  
 The dataset for this project was collected from the [IUDX Catalogue](https://catalogue.cos.iudx.org.in/).
+
 ---
 ## 📽️ Video Demo  
 
